@@ -23,7 +23,7 @@ represent 2 points that determine a selection within the image.
   There are 2 pointers that hold the image's pixel data, mono_chr for
 monochrome images and rgb for rgb images. When one is in use the other is
 NULL.  
-    ```c
+
     //The image structure looks like this:
     struct img {
         __UINT_FAST32_TYPE__ type;
@@ -33,15 +33,17 @@ NULL.
         struct select sel;
         struct rgb **rgb;
     };
+    
     //The select structure looks like this:
     struct select {
 	__UINT_FAST32_TYPE__ x1, x2, y1, y2;
     };
+    
     //The rgb structure looks like this:
     struct rgb {
 	double r, g, b;
     };
-    ```
+
     
   The majority of the functions are explained using comments inside the code,
 so I am going to explain only the more complex.  
@@ -64,7 +66,7 @@ the callculations up).
 
 **The effects.c & .h files:**  
   They hold the kernels, that look like this:
-        ```c
+
         //Kernel matrix for edge detection filter
         const double edge_matrix[3][3] = {
                 {-1, -1, -1},
@@ -85,20 +87,20 @@ the callculations up).
                 {0.0625, 0.125, 0.0625},
                 {0.125, 0.25, 0.125},
                 {0.0625, 0.125, 0.0625}};
-	```
+
 
 **The macros.h file:**  
   Holds macros that represent error codes, messages and values
 Peek inside:
-    ```c
+
     #define ZERO '0'
     #define UNDEF_ERR_CODE -1
     #define INVAL_COORD "Invalid set of coordinates\n"
-    ```
+
 **The utils.c & .h files:**  
   They work around 2 structures:
 
-    ```c
+
     struct uint_list {
         __UINT_FAST32_TYPE__ *arr;
         __UINT_FAST32_TYPE__ nr_elm;
@@ -107,7 +109,7 @@ Peek inside:
         __INT_FAST32_TYPE__ *arr;
         __INT_FAST32_TYPE__ nr_elm;
     };
-    ```
+
 
   Those structures are used as a support to reading data from
 the command lines parsed through the console. They support multiple
