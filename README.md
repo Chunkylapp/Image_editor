@@ -23,7 +23,11 @@ represent 2 points that determine a selection within the image.
   There are 2 pointers that hold the image's pixel data, mono_chr for
 monochrome images and rgb for rgb images. When one is in use the other is
 NULL.  
+<<<<<<< HEAD
     ```c
+=======
+
+>>>>>>> 5e2be7ba13e7b72b57b5f596be695b4273f315cd
     //The image structure looks like this:
     struct img {
         __UINT_FAST32_TYPE__ type;
@@ -33,12 +37,12 @@ NULL.
         struct select sel;
         struct rgb **rgb;
     };
-
+    
     //The select structure looks like this:
     struct select {
 	__UINT_FAST32_TYPE__ x1, x2, y1, y2;
     };
-
+    
     //The rgb structure looks like this:
     struct rgb {
 	double r, g, b;
@@ -66,25 +70,26 @@ the callculations up).
 
 **The effects.c & .h files:**  
   They hold the kernels, that look like this:
+<<<<<<< HEAD
         ```c
+=======
+
+>>>>>>> 5e2be7ba13e7b72b57b5f596be695b4273f315cd
         //Kernel matrix for edge detection filter
         const double edge_matrix[3][3] = {
                 {-1, -1, -1},
                 {-1, 8, -1},
                 {-1, -1, -1}};
-
         //Kernel matrix for sharpen filter
         const double sharp_matrix[3][3] = {
                 {0, -1, 0},
                 {-1, 5, -1},
                 {0, -1, 0}};
-
         //Kernel matrix for blur filter
         const double bblur_matrix[3][3] = {
                 {0.1111, 0.1111, 0.1111},
                 {0.1111, 0.1111, 0.1111},
                 {0.1111, 0.1111, 0.1111}};
-
         //Kernel matrix for Gaussian blur filter
         const double gblur_matrix[3][3] = {
                 {0.0625, 0.125, 0.0625},
@@ -95,7 +100,11 @@ the callculations up).
 **The macros.h file:**  
   Holds macros that represent error codes, messages and values
 Peek inside:
+<<<<<<< HEAD
     ```c
+=======
+
+>>>>>>> 5e2be7ba13e7b72b57b5f596be695b4273f315cd
     #define ZERO '0'
     #define UNDEF_ERR_CODE -1
     #define INVAL_COORD "Invalid set of coordinates\n"
