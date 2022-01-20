@@ -5,7 +5,7 @@ gaussian blur, edge detection).
   The program is implemented using dynamic allocation (which we all hate) and
 only works on ppm and pgm formats.  
    The commands are the following:  
-       - LOAD <image>  
+      - LOAD <image>  
       - SELECT <x1> <y1> <x2> <y2> (coordinates to 2 points)  
       - SELECT ALL (selects the all image)  
       - CROP (crops it)  
