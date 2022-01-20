@@ -14,6 +14,10 @@ struct int_list *new_int_list(void)
 	//allocating space for the new array
 	struct int_list *lst = (struct int_list *)
 							calloc(1, sizeof(struct int_list));
+	if (!lst) {
+		fprintf(stderr, UNDEF_ERR);
+		exit(UNDEF_ERR_CODE);
+	}
 	(*lst).arr = NULL;
 	(*lst).nr_elm = 0;
 
@@ -26,6 +30,10 @@ struct uint_list *new_uint_list(void)
 	//allocating space for the new array
 	struct uint_list *lst = (struct uint_list *)
 							calloc(1, sizeof(struct uint_list));
+	if (!lst) {
+		fprintf(stderr, UNDEF_ERR);
+		exit(UNDEF_ERR_CODE);
+	}
 	(*lst).arr = NULL;
 	(*lst).nr_elm = 0;
 
@@ -56,6 +64,10 @@ void enl_int_list(struct int_list **lst)
 					realloc((**lst).arr,
 							((**lst).nr_elm + 1) *
 							sizeof(__INT_FAST32_TYPE__));
+	if (!lst) {
+		fprintf(stderr, UNDEF_ERR);
+		exit(UNDEF_ERR_CODE);
+	}
 	(**lst).arr[(**lst).nr_elm] = 0;
 }
 
@@ -67,6 +79,10 @@ void enl_uint_list(struct uint_list **lst)
 					realloc((**lst).arr,
 							((**lst).nr_elm + 1) *
 							sizeof(__UINT_FAST32_TYPE__));
+	if (!lst) {
+		fprintf(stderr, UNDEF_ERR);
+		exit(UNDEF_ERR_CODE);
+	}
 	(**lst).arr[(**lst).nr_elm] = 0;
 }
 
@@ -138,6 +154,10 @@ unsigned int det_img_type(char *fname)
 	//the image's type. The file is not a supported format we return 0
 	FILE *input = fopen(fname, "r");
 	char *line = (char *)malloc(BUFFER_SIZE * sizeof(char));
+	if (!line) {
+		fprintf(stderr, UNDEF_ERR);
+		exit(UNDEF_ERR_CODE);
+	}
 	fgets(line, BUFFER_SIZE, input);
 	while (line[0] == '#')
 		fgets(line, BUFFER_SIZE, input);

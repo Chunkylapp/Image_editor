@@ -210,12 +210,13 @@ void apply_cmd(struct img *image, char *command)
 //the EXIT command is "summoned". Returns 0 if all went smooth
 unsigned int get_commands(struct img *image)
 {
-	char *command = (char *)malloc(BUFFER_SIZE * sizeof(char)),
-		 *fname = NULL;
-
+	char *command = (char *)malloc(BUFFER_SIZE * sizeof(char)), *fname = NULL;
+	if (!command) {
+		free(command);
+		exit(UNDEF_ERR_CODE);
+	}
 	while (1) {
-		//reading the line
-		fgets(command, BUFFER_SIZE, stdin);
+		fgets(command, BUFFER_SIZE, stdin);//reading the line
 		if (strstr(command, "EXIT")) { // exiting if the command is exit
 			if ((*image).type == 0)
 				printf(NO_IMG);

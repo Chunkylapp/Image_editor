@@ -72,8 +72,17 @@ void effect(struct img *tmp, const double effect_matrix[][3])
 	//creating an auxiliary matrix to place the modified pixels
 	struct rgb **aux = NULL;
 	aux = (struct rgb **)calloc(((*tmp).height + 1), sizeof(struct rgb *));
-	for (unsigned int i = 0; i < (*tmp).height + 1; i++)
+	if (!aux) {
+		fprintf(stderr, UNDEF_ERR);
+		exit(UNDEF_ERR_CODE);
+	}
+	for (unsigned int i = 0; i < (*tmp).height + 1; i++) {
 		aux[i] = (struct rgb *)calloc(((*tmp).width + 1), sizeof(struct rgb));
+		if (!aux[i]) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
+	}
 
 	//increasing the selection in order to create a border around the selection
 	//if the selection covers the all image and marking it by changing the value
@@ -167,14 +176,31 @@ void new_img(struct img *tmp,
 	if ((*tmp).type != 3 && (*tmp).type != 6) {
 		(*tmp).mono_chr = (double **)
 						  calloc(height, sizeof(double *));
+		if (!(*tmp).mono_chr) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
 		for (unsigned int i = 0; i < height; i++) {
 			(*tmp).mono_chr[i] = (double *)
 								 calloc(width, sizeof(double));
+			if (!(*tmp).mono_chr[i]) {
+				fprintf(stderr, UNDEF_ERR);
+				exit(UNDEF_ERR_CODE);
+			}
 		}
 	} else { //allocating space for the image if it's rgb
 		(*tmp).rgb = (struct rgb **)calloc(height, sizeof(struct rgb *));
-		for (unsigned int i = 0; i < height; i++)
+		if (!(*tmp).rgb) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
+		for (unsigned int i = 0; i < height; i++) {
 			(*tmp).rgb[i] = (struct rgb *)calloc(width, sizeof(struct rgb));
+			if (!(*tmp).rgb[i]) {
+				fprintf(stderr, UNDEF_ERR);
+				exit(UNDEF_ERR_CODE);
+			}
+		}
 	}
 }
 
@@ -298,24 +324,28 @@ void rotate_all(struct img *tmp, int angle)
 		return;
 	if (angle < 0)
 		angle = 360 + angle;
-
-	//we're using an auxiliary matrix (depends on the image type
-	//which one we're using)
+	//we're using an auxiliary matrix
 	double **aux_mono_chr;
 	struct rgb **aux_rgb;
-
 	for (; angle > 0; angle = angle - 90) {
 		__UINT_FAST32_TYPE__ new_i = 0, new_j = 0;
 		if ((*tmp).type != 3 && (*tmp).type != 6) {
 			aux_mono_chr = (double **)
 						  calloc((*tmp).width, sizeof(double *));
+			if (!aux_mono_chr) {
+				fprintf(stderr, UNDEF_ERR);
+				exit(UNDEF_ERR);
+			}
 
-			for (unsigned int i = 0; i < (*tmp).width; i++)
+			for (unsigned int i = 0; i < (*tmp).width; i++) {
 				aux_mono_chr[i] = (double *)
 								  calloc((*tmp).height,
 										 sizeof(double));
-			//after allocating space we're moving by columns (starting from 0)
-			//and lines (starting from the height value) and copying them into
+				if (!aux_mono_chr[i]) {
+					fprintf(stderr, UNDEF_ERR);
+					exit(UNDEF_ERR);
+				} //after allocating space we're moving by columns (from 0
+			} //and lines (from the height value) and copying them into
 			//the aux matrix, hence rotating the values by 90 degrees to the
 			//right new_i and new_j hold the sizes of the auxiliary matrix
 			for (unsigned int j = 0; j < (*tmp).width; j++) {
@@ -323,8 +353,7 @@ void rotate_all(struct img *tmp, int angle)
 					aux_mono_chr[new_i][new_j++] = (*tmp).mono_chr[i][j];
 				new_j = 0;
 				new_i++;
-			}
-			//freeing the image matrix and putting the aux in there hehe :P
+			} //freeing the image matrix and putting the aux in there hehe :P
 			for (unsigned int i = 0; i < (*tmp).height; i++)
 				free((*tmp).mono_chr[i]);
 			free((*tmp).mono_chr);
@@ -332,11 +361,18 @@ void rotate_all(struct img *tmp, int angle)
 		} else {
 			aux_rgb = (struct rgb **)
 					  calloc((*tmp).width, sizeof(struct rgb *));
-			for (unsigned int i = 0; i < (*tmp).width; i++)
+			if (!aux_rgb) {
+				fprintf(stderr, UNDEF_ERR);
+				exit(UNDEF_ERR);
+			}
+			for (unsigned int i = 0; i < (*tmp).width; i++) {
 				aux_rgb[i] = (struct rgb *)
 							 calloc((*tmp).height, sizeof(struct rgb));
-			//after allocating space we're moving by columns (starting from 0)
-			//and lines (starting from the height value) and copying them into
+				if (!aux_rgb[i]) {
+					fprintf(stderr, UNDEF_ERR);
+					exit(UNDEF_ERR);
+				} //after allocating space we're moving by columns (from 0)
+			} //and lines (from the height value) and copying them into
 			//the aux matrix, hence rotating the values by 90 degrees to the
 			//right new_i and new_j hold the sizes of the auxiliary matrix
 			for (unsigned int j = 0; j < (*tmp).width; j++) {
@@ -347,14 +383,12 @@ void rotate_all(struct img *tmp, int angle)
 				}
 				new_j = 0;
 				new_i++;
-			}
-			//freeing the image matrix and putting the aux in there hehe :P
+			} //freeing the image matrix and putting the aux in there hehe :P
 			for (unsigned int i = 0; i < (*tmp).height; i++)
 				free((*tmp).rgb[i]);
 			free((*tmp).rgb);
 			(*tmp).rgb = aux_rgb;
-		}
-		//switching the sizes and selecting the all image in order to not
+		} //switching the sizes and selecting the all image in order to not
 		//screw things up even more xD
 		__UINT_FAST32_TYPE__ aux = (*tmp).height;
 		(*tmp).height = (*tmp).width;
@@ -367,34 +401,43 @@ void rotate_all(struct img *tmp, int angle)
 //this function works only if a sub-image is selected
 void rotate_sel(struct img *tmp, int angle)
 {
-	//if the angle is 360 or -360 we're not doing anything lol
-	if (angle == 360 || angle == -360)
+	if (angle == 360 || angle == -360) //if angle is (-)360 plain return
 		return;
 	if (angle < 0)
 		angle = 360 + angle;
-	//we're using an auxiliary matrix (depends on the image type
-	//which one we're using)
-	double **aux_mono_chr = NULL;
+	double **aux_mono_chr = NULL; //we're using an auxiliary matrix
 	struct rgb **aux_rgb = NULL;
-
 	__UINT_FAST32_TYPE__ size = (*tmp).sel.x2 - (*tmp).sel.x1;
-
-	//allocating space for the auxiliary variable outside of the while
-	//loop since the selection is square
 	if ((*tmp).type != 3 && (*tmp).type != 6) {
 		aux_mono_chr = (double **)
 						calloc(size, sizeof(double *));
+		if (!aux_mono_chr) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
 		for (unsigned int i = 0; i < size; i++) {
 			aux_mono_chr[i] = (double *)
 							  calloc(size, sizeof(double));
+			if (!aux_mono_chr[i]) {
+				fprintf(stderr, UNDEF_ERR);
+				exit(UNDEF_ERR_CODE);
+			}
 		}
 	} else {
 		aux_rgb = (struct rgb **)calloc(size, sizeof(struct rgb *));
-		for (unsigned int i = 0; i < size; i++)
+		if (!aux_rgb) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
+		for (unsigned int i = 0; i < size; i++) {
 			aux_rgb[i] = (struct rgb *)calloc(size, sizeof(struct rgb));
+			if (!aux_rgb[i]) {
+				fprintf(stderr, UNDEF_ERR);
+				exit(UNDEF_ERR_CODE);
+			}
+		}
 	}
-	for (; angle > 0; angle = angle - 90) {
-		//rotating the values using the auxiliary matrix
+	for (; angle > 0; angle = angle - 90) { //rotating the matrix
 		__UINT_FAST32_TYPE__ new_i = 0, new_j = 0;
 		if ((*tmp).type != 3 && (*tmp).type != 6) {
 			for (unsigned int j = (*tmp).sel.x1; j < (*tmp).sel.x2; j++) {
@@ -402,14 +445,12 @@ void rotate_sel(struct img *tmp, int angle)
 					aux_mono_chr[new_i][new_j++] = (*tmp).mono_chr[i][j];
 				new_j = 0;
 				new_i++;
-			}
-			//putting them back into the image matrix
+			} //putting them back into the image matrix
 			for (unsigned int i = (*tmp).sel.y1; i < (*tmp).sel.y2; i++)
 				for (unsigned int j = (*tmp).sel.x1; j < (*tmp).sel.x2; j++)
 					(*tmp).mono_chr[i][j] =
 							aux_mono_chr[i - (*tmp).sel.y1][j - (*tmp).sel.x1];
-		} else {
-			//rotating the values using the auxiliary matrix
+		} else { //rotating the values using the auxiliary matrix
 			for (unsigned int j = (*tmp).sel.x1; j < (*tmp).sel.x2; j++) {
 				for (int i = (*tmp).sel.y2 - 1; i >= (int)(*tmp).sel.y1; i--) {
 					aux_rgb[new_i][new_j].r = (*tmp).rgb[i][j].r;
@@ -429,8 +470,7 @@ void rotate_sel(struct img *tmp, int angle)
 							aux_rgb[i - (*tmp).sel.y1][j - (*tmp).sel.x1].b;
 				}
 		}
-	}
-	//burning the auxiliary matrices
+	} //burning the auxiliary matrices
 	if ((*tmp).type != 3 && (*tmp).type != 6) {
 		for (unsigned int i = 0; i < size; i++)
 			free(aux_mono_chr[i]);
@@ -456,9 +496,18 @@ void crop(struct img *tmp)
 		//allocating space
 		aux_mono_chr = (double **)
 						calloc(size1, sizeof(double *));
-		for (unsigned int i = 0; i < size1; i++)
+		if (!aux_mono_chr) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
+		for (unsigned int i = 0; i < size1; i++) {
 			aux_mono_chr[i] = (double *)
 								calloc(size2, sizeof(double));
+			if (!aux_mono_chr[i]) {
+				fprintf(stderr, UNDEF_ERR);
+				exit(UNDEF_ERR_CODE);
+			}
+		}
 		//copying the selection into the auxiliary
 		for (unsigned int i = (*tmp).sel.y1; i < (*tmp).sel.y2; i++)
 			for (unsigned int j = (*tmp).sel.x1; j < (*tmp).sel.x2; j++)
@@ -478,8 +527,17 @@ void crop(struct img *tmp)
 	} else {
 		//allocating space
 		aux_rgb = (struct rgb **)calloc(size1, sizeof(struct rgb *));
-		for (unsigned int i = 0; i < size1; i++)
+		if (!aux_rgb) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
+		for (unsigned int i = 0; i < size1; i++) {
 			aux_rgb[i] = (struct rgb *)calloc(size2, sizeof(struct rgb));
+			if (!aux_rgb[i]) {
+				fprintf(stderr, UNDEF_ERR);
+				exit(UNDEF_ERR_CODE);
+			}
+		}
 		//copying the selection into the auxiliary
 		for (unsigned int i = (*tmp).sel.y1; i < (*tmp).sel.y2; i++)
 			for (unsigned int j = (*tmp).sel.x1; j < (*tmp).sel.x2; j++) {
@@ -509,22 +567,22 @@ void crop(struct img *tmp)
 //binary files
 void load_img_binary(char *f_name, struct img *tmp)
 {
-	FILE *input = fopen(f_name, "rb");
-	//opening the image and checking if it's opened correctly
-	if (!input) {
+	FILE *input = fopen(f_name, "rb");//opening the image
+	if (!input) { //checking if it's opened correctly
 		printf(UNDEF_ERR);
 		exit(UNDEF_ERR_CODE);
-	}
-	//long unsigned int array used to fetch numbers from the lines
+	} //long unsigned int array used to fetch numbers from the lines
 	struct uint_list *lst;
 	__UINT_FAST32_TYPE__ type = 0, width = 0, height = 0, max_val = 0;
 	char *line = NULL, c = 0;
-
 	while (!feof(input)) {
 		line = (char *)calloc(BUFFER_SIZE, sizeof(char));
+		if (!line) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
 		fgets(line, BUFFER_SIZE, input);
-		//if line is a comment we're skipping it
-		if (line[0] == COMM) {
+		if (line[0] == COMM) { //if line is a comment we're skipping it
 			free(line);
 			continue;
 		} //if the line's 1st element is 'P' we're getting the 2nd value
@@ -595,25 +653,25 @@ void load_img_binary(char *f_name, struct img *tmp)
 //ascii files
 void load_img_ascii(char *f_name, struct img *tmp)
 {
-	FILE *input = fopen(f_name, "r");
-	//opening the image and checking if it's opened correctly
-	if (!input) {
+	FILE *input = fopen(f_name, "r");//opening the image
+	if (!input) { //checking if it's opened correctly
 		printf(UNDEF_ERR);
 		exit(UNDEF_ERR_CODE);
 	} //long unsigned int array used to fetch numbers from the line
 	struct uint_list *lst;
 	__UINT_FAST32_TYPE__ type = 0, width = 0, height = 0, max_val = 0;
 	char *line = NULL, c = 0;
-
 	while (!feof(input)) {
 		line = (char *)calloc(BUFFER_SIZE, sizeof(char));
+		if (!line) {
+			fprintf(stderr, UNDEF_ERR);
+			exit(UNDEF_ERR_CODE);
+		}
 		fgets(line, BUFFER_SIZE, input);
-		//if line is a comment we're skipping its
-		if (line[0] == COMM) {
+		if (line[0] == COMM) {//if line is a comment we're skipping it
 			free(line);
 			continue;
-		}
-		//if the line's 1st element is 'P' we're getting the 2nd value
+		} //if the line's 1st element is 'P' we're getting the 2nd value
 		if (line[0] == TYPE) {//and putting it in the type variable
 			type = line[1] - ZERO;
 			free(line);
