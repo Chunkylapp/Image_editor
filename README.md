@@ -3,16 +3,16 @@
 on an image (crop, rotate, save, load) and apply certain filters(blur, sharpen,
 gaussian blur, edge detection).  
   The program is implemented using dynamic allocation (which we all hate) and
-only works on ppm and pgm formats.
+only works on ppm and pgm formats.  
    The commands are the following:  
-   	- LOAD <image>  
-	- SELECT <x1> <y1> <x2> <y2> (coordinates to 2 points)  
-	- SELECT ALL (selects the all image)  
-	- CROP (crops it)  
-	- ROTATE <angle>  
-	- APPLY <filter> (BLUR, GAUSSIAN_BLUR, EDGE, SHARPEN)  
-	- SAVE <image>  
-	- EXIT  
+       - LOAD <image>  
+      - SELECT <x1> <y1> <x2> <y2> (coordinates to 2 points)  
+      - SELECT ALL (selects the all image)  
+      - CROP (crops it)  
+      - ROTATE <angle>  
+      - APPLY <filter> (BLUR, GAUSSIAN_BLUR, EDGE, SHARPEN)  
+      - SAVE <image>  
+      - EXIT  
 
 **The code itself**  
   The code is split among multiple files which are used to separate functions
