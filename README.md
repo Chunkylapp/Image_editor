@@ -4,6 +4,15 @@ on an image (crop, rotate, save, load) and apply certain filters(blur, sharpen,
 gaussian blur, edge detection).  
   The program is implemented using dynamic allocation (which we all hate) and
 only works on ppm and pgm formats.
+   The commands are the following:
+   	- LOAD <image>
+	- SELECT <x1> <y1> <x2> <y2> (coordinates to 2 points)
+	- SELECT ALL (selects the all image)
+	- CROP (crops it)
+	- ROTATE <angle>
+	- APPLY <filter> (BLUR, GAUSSIAN_BLUR, EDGE, SHARPEN)
+	- SAVE <image>
+	- EXIT
 
 **The code itself**  
   The code is split among multiple files which are used to separate functions
@@ -23,11 +32,7 @@ represent 2 points that determine a selection within the image.
   There are 2 pointers that hold the image's pixel data, mono_chr for
 monochrome images and rgb for rgb images. When one is in use the other is
 NULL.  
-<<<<<<< HEAD
-    ```c
-=======
 
->>>>>>> 5e2be7ba13e7b72b57b5f596be695b4273f315cd
     //The image structure looks like this:
     struct img {
         __UINT_FAST32_TYPE__ type;
@@ -47,7 +52,7 @@ NULL.
     struct rgb {
 	double r, g, b;
     };
-    ```
+
     
   The majority of the functions are explained using comments inside the code,
 so I am going to explain only the more complex.  
@@ -70,11 +75,7 @@ the callculations up).
 
 **The effects.c & .h files:**  
   They hold the kernels, that look like this:
-<<<<<<< HEAD
-        ```c
-=======
-
->>>>>>> 5e2be7ba13e7b72b57b5f596be695b4273f315cd
+  
         //Kernel matrix for edge detection filter
         const double edge_matrix[3][3] = {
                 {-1, -1, -1},
@@ -95,24 +96,20 @@ the callculations up).
                 {0.0625, 0.125, 0.0625},
                 {0.125, 0.25, 0.125},
                 {0.0625, 0.125, 0.0625}};
-        ```
+
 
 **The macros.h file:**  
   Holds macros that represent error codes, messages and values
 Peek inside:
-<<<<<<< HEAD
-    ```c
-=======
 
->>>>>>> 5e2be7ba13e7b72b57b5f596be695b4273f315cd
     #define ZERO '0'
     #define UNDEF_ERR_CODE -1
     #define INVAL_COORD "Invalid set of coordinates\n"
-    ```
+
+    
 **The utils.c & .h files:**  
   They work around 2 structures:
 
-    ```c
     struct uint_list {
         __UINT_FAST32_TYPE__ *arr;
         __UINT_FAST32_TYPE__ nr_elm;
@@ -121,7 +118,6 @@ Peek inside:
         __INT_FAST32_TYPE__ *arr;
         __INT_FAST32_TYPE__ nr_elm;
     };
-    ```
 
   Those structures are used as a support to reading data from
 the command lines parsed through the console. They support multiple
