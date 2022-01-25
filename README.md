@@ -138,7 +138,7 @@ challenge. I learned a lot, mainly that I can correctly write complex functions
 and completley screw up the easy ones. I stay true to my thesis, that dynamic
 allocation deserves to be hated. Stay classy!
 
-**P.S. Accurate representation of me writing this homework:**
+**P.S. Accurate representation of me writing this :**
 ```
                                      )
                             )      ((     (
